@@ -105,10 +105,10 @@ function mousePressed() {
     } else {
       if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
         && mouseY > _TAROT_PANEL_POSITION.y + 15 && mouseY < _TAROT_PANEL_POSITION.y + 15 + _TAROT_BTN_HEIGHT) {
-          pickedResult = possibleResultsJSON.resultados[floor(random(possibleResultsJSON.resultados.length))];
-          for (let i = 0; i < pickedResult.cards.length; i++) {
-            deck.pickedCards.push(arts[pickedResult.cards[i]]);
-          }
+          // pickedResult = possibleResultsJSON.resultados[floor(random(possibleResultsJSON.resultados.length))];
+          // for (let i = 0; i < pickedResult.cards.length; i++) {
+          //   deck.pickedCards.push(arts[pickedResult.cards[i]]);
+          // }
           results.setResult(pickedResult);
           state = _TAROT_STATE_RESULT;
           results.start();
