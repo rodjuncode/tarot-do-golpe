@@ -1,20 +1,27 @@
 const _TAROT_CARDS_FOLDER = 'cards/';
 const _TAROT_CARDS_EXT = '.jpg';
-const _TAROT_CARDS_QTY = 23;
+const _TAROT_CARDS_QTY = 24;
 const _TAROT_STATE_INSTRUCTION = 0;
 const _TAROT_STATE_PICK = 1;
 const _TAROT_STATE_RESULT = 2;
+let _VERT_UNIT;
+let _VERT_SPACING;
 let _TAROT_PANEL_POSITION;
-const _TAROT_PANEL_POSITION_X = 695;
-const _TAROT_PANEL_POSITION_Y = 740;
-const _TAROT_BTN_WIDTH = 287;
-const _TAROT_BTN_HEIGHT = 45;
+// const _TAROT_PANEL_POSITION_X = 695;
+// const _TAROT_PANEL_POSITION_Y = 740;
+// const _TAROT_PANEL_POSITION_X = 430;
+// const _TAROT_PANEL_POSITION_Y = 400;
+let _TAROT_PANEL_POSITION_X;
+let _TAROT_PANEL_POSITION_Y;
+let _TAROT_BTN_WIDTH;
+let _TAROT_BTN_HEIGHT;
 
 let arts = [];
 let state = _TAROT_STATE_INSTRUCTION;
 let back;
 let deck;
 let instructions;
+let tips;
 let results;
 // let possibleResults = [
 //   { 
@@ -46,9 +53,24 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  _CARD_HEIGHT = height/5;
+  _CARD_WIDTH = _CARD_HEIGHT*0.6666;
+  _CARD_CORNER = _CARD_WIDTH/12;
+  _CARD_BORDER_SIZE = _CARD_WIDTH/15;
+  _DECK_CARD_MARGIN = _CARD_HEIGHT/10;  
+  _TAROT_PANEL_POSITION_X = _CARD_WIDTH*4 + _DECK_CARD_MARGIN*5;
+  _TAROT_PANEL_POSITION_Y = _CARD_HEIGHT*3 + _DECK_CARD_MARGIN*2.2;
+  _TAROT_BTN_WIDTH = _CARD_WIDTH*2 + _DECK_CARD_MARGIN;
+  _TAROT_BTN_HEIGHT = _CARD_HEIGHT/3.8;
+  _VERT_UNIT = _CARD_HEIGHT/11;
+  _VERT_SPACING = _VERT_UNIT/2;
+  _CARD_SELECTED_OFFSET = _CARD_WIDTH/10;
+  
   deck = new Deck(22,0,0,arts,back);
   deck.start();
   instructions = new Panel(_PANEL_TYPE_INSTRUCTIONS);
+  tips = new Panel(_PANEL_TYPE_TIPS);
   instructions.start();
   results = new Panel(_PANEL_TYPE_RESULTS);
   _TAROT_PANEL_POSITION = createVector(_TAROT_PANEL_POSITION_X,_TAROT_PANEL_POSITION_Y);
@@ -63,6 +85,7 @@ function draw() {
   deck.show();
   instructions.show();
   results.show();
+  tips.show();
 
   showControlPanel();
   
@@ -83,49 +106,61 @@ function mousePressed() {
         // outros comandos
         if (deck.isReadyToReveal()) {
           if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-            && mouseY > _TAROT_PANEL_POSITION.y + 15 && mouseY < _TAROT_PANEL_POSITION.y + 15 + _TAROT_BTN_HEIGHT) {
+            && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*2 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*2 + _TAROT_BTN_HEIGHT) {
               //pickedResult = possibleResults[floor(random(possibleResults.length))];
               pickedResult = possibleResultsJSON.resultados[floor(random(possibleResultsJSON.resultados.length))];
               for (let i = 0; i < pickedResult.cards.length; i++) {
-                deck.pickedCards.push(arts[pickedResult.cards[i]]);
+                deck.pickedCards.push(arts[pickedResult.cards[i]-1]);
               }
               deck.reveal();
           }        
         }
         if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-          && mouseY > _TAROT_PANEL_POSITION.y + 75 && mouseY < _TAROT_PANEL_POSITION.y + 75 + _TAROT_BTN_HEIGHT) {
+          && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*6 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*6 + _TAROT_BTN_HEIGHT) {
             deck.start();
         }
-        if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-          && mouseY > _TAROT_PANEL_POSITION.y + 135 && mouseY < _TAROT_PANEL_POSITION.y + 135 + _TAROT_BTN_HEIGHT) {
+        if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48
+          && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 + _TAROT_BTN_HEIGHT) {
             instructions.start();
             state = _TAROT_STATE_INSTRUCTION;
         }        
+        if (mouseX > _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48 + _TAROT_BTN_WIDTH*.04 && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48 + _TAROT_BTN_WIDTH*.04 + _TAROT_BTN_WIDTH*.48
+          && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 + _TAROT_BTN_HEIGHT) {
+            tips.start();
+            state = _TAROT_STATE_INSTRUCTION;
+        }        
+
       }
     } else {
       if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-        && mouseY > _TAROT_PANEL_POSITION.y + 15 && mouseY < _TAROT_PANEL_POSITION.y + 15 + _TAROT_BTN_HEIGHT) {
-          pickedResult = possibleResultsJSON.resultados[floor(random(possibleResultsJSON.resultados.length))];
-          for (let i = 0; i < pickedResult.cards.length; i++) {
-            deck.pickedCards.push(arts[pickedResult.cards[i]]);
-          }
+        && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*2 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*2 + _TAROT_BTN_HEIGHT) {
+          // pickedResult = possibleResultsJSON.resultados[floor(random(possibleResultsJSON.resultados.length))];
+          // for (let i = 0; i < pickedResult.cards.length; i++) {
+          //   deck.pickedCards.push(arts[pickedResult.cards[i]]);
+          // }
           results.setResult(pickedResult);
           state = _TAROT_STATE_RESULT;
           results.start();
       }
       if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-        && mouseY > _TAROT_PANEL_POSITION.y + 75 && mouseY < _TAROT_PANEL_POSITION.y + 75 + _TAROT_BTN_HEIGHT) {
+        && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*6 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*6 + _TAROT_BTN_HEIGHT) {
           deck.start();
       }
-      if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH
-        && mouseY > _TAROT_PANEL_POSITION.y + 135 && mouseY < _TAROT_PANEL_POSITION.y + 135 + _TAROT_BTN_HEIGHT) {
+      if (mouseX > _TAROT_PANEL_POSITION.x && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48
+        && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 + _TAROT_BTN_HEIGHT) {
           instructions.start();
           state = _TAROT_STATE_INSTRUCTION;
-      }                  
+      }        
+      if (mouseX > _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48 + _TAROT_BTN_WIDTH*.04 && mouseX < _TAROT_PANEL_POSITION.x + _TAROT_BTN_WIDTH*.48 + _TAROT_BTN_WIDTH*.04 + _TAROT_BTN_WIDTH*.48
+        && mouseY > _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 && mouseY < _TAROT_PANEL_POSITION.y + _VERT_UNIT*10 + _TAROT_BTN_HEIGHT) {
+          tips.start();
+          state = _TAROT_STATE_INSTRUCTION;
+      }                    
     }
   } else if (state == _TAROT_STATE_INSTRUCTION) {
     if (instructions.checkClick(mouseX,mouseY)) {
       instructions.hide();
+      tips.hide();
       state = _TAROT_STATE_PICK;
     }
   }
@@ -145,7 +180,7 @@ function showControlPanel() {
     push();
     translate(_TAROT_PANEL_POSITION.x,_TAROT_PANEL_POSITION.y);
     noStroke();
-    textSize(32);
+    textSize(_VERT_UNIT*2);
     textAlign(CENTER);
     if (deck.isReadyToReveal()) {
       if (deck.isRevealed) {
@@ -156,7 +191,7 @@ function showControlPanel() {
     } else {
       fill(_DISABLED_BUTTON_COLOR);
     }    
-    rect(0,15,_TAROT_BTN_WIDTH,_TAROT_BTN_HEIGHT);
+    rect(0,_VERT_UNIT*2,_TAROT_BTN_WIDTH,_TAROT_BTN_HEIGHT);
     if (deck.isRevealed) {
       fill(_ENABLE_BUTTON_COLOR);
     } else {
@@ -166,15 +201,18 @@ function showControlPanel() {
     if (deck.isRevealed) {
       actionButtonTxt = "ver resultado";
     }
-    text(actionButtonTxt,0,15+8,_TAROT_BTN_WIDTH);
+    text(actionButtonTxt,0,_VERT_UNIT*2+_VERT_SPACING,_TAROT_BTN_WIDTH);
     fill(_ENABLE_BUTTON_COLOR);
-    rect(0,75,_TAROT_BTN_WIDTH,_TAROT_BTN_HEIGHT);
+    rect(0,_VERT_UNIT*6,_TAROT_BTN_WIDTH,_TAROT_BTN_HEIGHT);
     fill(255);
-    text("aleatorizar",0,75+8,_TAROT_BTN_WIDTH);
+    text("aleatorizar",0,_VERT_UNIT*6+_VERT_SPACING,_TAROT_BTN_WIDTH);
     fill(_ENABLE_BUTTON_COLOR);
-    rect(0,135,_TAROT_BTN_WIDTH,_TAROT_BTN_HEIGHT);    
+    textSize(_VERT_UNIT*1.5);
+    rect(0,_VERT_UNIT*10,_TAROT_BTN_WIDTH*.48,_TAROT_BTN_HEIGHT);    
+    rect(_TAROT_BTN_WIDTH*.48+_TAROT_BTN_WIDTH*.04,_VERT_UNIT*10,_TAROT_BTN_WIDTH*.48,_TAROT_BTN_HEIGHT);    
     fill(255);
-    text("instruções",0,135+8,_TAROT_BTN_WIDTH);
+    text("info",0,_VERT_UNIT*10+_VERT_SPACING*1.5,_TAROT_BTN_WIDTH*.48);
+    text("dicas",_TAROT_BTN_WIDTH*.48+_TAROT_BTN_WIDTH*.04,_VERT_UNIT*10+_VERT_SPACING*1.5,_TAROT_BTN_WIDTH*.48);
     pop();
   }
 }

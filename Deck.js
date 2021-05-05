@@ -1,7 +1,7 @@
 const _DECK_MAX_SELECTED = 3;
 const _DECK_LINES = 4;
 const _DECK_COLUMNS = 6;
-const _DECK_CARD_MARGIN = 25;
+let _DECK_CARD_MARGIN = _CARD_HEIGHT/10;
 const _DECK_START_RATE = 0.015;
 
 function Deck(s,x,y,a,b) {
@@ -74,7 +74,6 @@ function Deck(s,x,y,a,b) {
   }
 
 }
-
 
 function easeOutCubic(x) {
   return 1 - pow(1 - x, 3);

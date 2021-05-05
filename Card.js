@@ -1,12 +1,21 @@
-const _CARD_WIDTH = 140;
-const _CARD_HEIGHT = 210;
-const _CARD_CORNER = 10;
+let _CARD_WIDTH = 140;
+let _CARD_HEIGHT = 210;
+let _CARD_CORNER = 10;
+let _CARD_BORDER_SIZE = 8;
+
+// let _CARD_WIDTH = 140;
+// let _CARD_HEIGHT = 210;
+// let _CARD_CORNER = 10;
+// let _CARD_BORDER_SIZE = 8;
+// let _CARD_WIDTH = 100;
+// let _CARD_HEIGHT = 150;
+// let _CARD_CORNER = 6;
+// let _CARD_BORDER_SIZE = 5;
 const _CARD_SHADOW_SPREAD = 5;
 const _CARD_SELECTED_BORDER = 3;
 const _CARD_SELECTED_COLOR = '#2176ff';
 const _CARD_FLIP_RATE = 0.15;
-const _CARD_SELECTED_OFFSET = 15;
-const _CARD_BORDER_SIZE = 8;
+let _CARD_SELECTED_OFFSET = _CARD_WIDTH/10;
 
 function Card(x,y,a,b,d) {
 
