@@ -63,7 +63,7 @@ function Panel(t) {
         fill('#3215c1');      
         text(_PANEL_TITLE_INSTRUCTIONS,_CARD_WIDTH+9,58)
         textStyle(NORMAL);
-        textSize(20);
+        textSize(18);
         text(_PANEL_INSTRUCTIONS,_CARD_WIDTH,98,800);
         textLeading(22*1.1);
         fill(255);
@@ -117,7 +117,7 @@ function Panel(t) {
         rotate(radians(2));
         c3.show();
         pop();
-        textSize(14);
+        textSize(12);
         fill('#3215c1');  
         if (!this._isStarting) {
           text(this.text,_CARD_WIDTH+_CARD_WIDTH*4.2,70,width/1.8);        
